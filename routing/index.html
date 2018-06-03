@@ -1,0 +1,66 @@
+<!-- https://blog.andrewray.me/flux-for-stupid-people/ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/4.2.2/react-router-dom.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.2.0/react-router.js"></script> -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    console.log(ReactRouterDOM)
+
+    let BrowserRouter = ReactRouterDOM.BrowserRouter;
+    let Switch = ReactRouterDOM.Switch;
+    let Route = ReactRouterDOM.Route;
+    let Link = ReactRouterDOM.Link;
+    
+    const Login = () => (<h1>This is login page</h1>);
+    const Logout = () => (<h1>This is logout page</h1>);
+    const Home = () => (<h1>This is home page</h1>);
+
+    const App = function() {
+        return (
+            <div> 
+                Router example: <br />
+                <Link to='/'>Home</Link><br />
+                <Link to='/login'>Login</Link><br />
+                <Link to='/logout'>Logout</Link>
+                <Switch>
+                    <Route exact path='/' component={Home}/>
+                    <Route path='/login' component={Login}/>
+                    <Route path='/logout' component={Logout}/>
+                </Switch>
+            </div>
+        );
+    }
+
+    const rootEle = (
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    )
+    ReactDOM.render(rootEle, document.getElementById('root'));
+
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      To set up a production-ready React build environment, follow these instructions:
+      * https://reactjs.org/docs/add-react-to-a-new-app.html
+      * https://reactjs.org/docs/add-react-to-an-existing-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      * https://reactjs.org/docs/react-without-jsx.html
+      * https://reactjs.org/docs/cdn-links.html
+    -->
+
+    <!-- https://github.com/jackielii/simplest-redux-example/blob/master/index.js -->
+  </body>
+</html>
