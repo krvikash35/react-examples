@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+
+    <div id="root"></div>
+
+    <div onclick="alert('Hi')">
+            <button onclick="(function(e){
+                console.log(e.target)
+                e.stopPropagation();
+            })(event)">Stop Event Propogation</button>
+    </div>
+
+    <script type="text/babel">
+    class Clock extends React.Component{
+        constructor(props){
+            super();
+            this.state = {date: new Date()}
+        }
+
+        componentDidMount(){
+            this.timerID = setInterval(() => {
+                this.setState({date: new Date()});
+            }, 1000);
+        }
+
+        componentWillUnmount(){
+            clearInterval(this.timerID);
+        }
+
+        render(){
+            return <h1>This is clock component: {this.state.date.toLocaleTimeString()} by {this.props.name}</h1>
+        }
+    }
+
+    function WelcomeFun(props){
+        return <h1> This is function component by {props.name}</h1>
+    }
+
+    class WelcomeCls extends React.Component{
+        render(){
+            return <h1> This is class component by {this.props.name}</h1>
+        }
+    }
+
+    class Reverse extends React.Component{
+        constructor(){
+            super();
+            this.state = {
+                reverse: ''
+            }
+        }
+
+        reverse(e){
+            let inStr = e.target.value;
+            console.log('instr', inStr)
+            if(!inStr)
+            return;
+            let revrseStr = inStr.split('').reverse().join('');
+            this.setState({reverseStr:revrseStr});
+        }
+        render(){
+            return (
+                <div> 
+                    <h1>Event Bind Example(reverse): {this.state.reverseStr}</h1>
+                    <input onChange={this.reverse.bind(this)} />  
+                </div>
+            )
+        }
+    }
+    
+    const element = (
+        <div>
+            <h1> Hello, world </h1>
+            <h2>It is {new Date().toLocaleTimeString()}.</h2>
+            <WelcomeFun name="vikash"/>
+            <WelcomeCls name="vikash"/>
+            <Clock name="vikash"/>
+            <Reverse/>
+        </div>
+        )
+    ReactDOM.render(
+        element,
+        document.getElementById('root')
+    );
+
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      To set up a production-ready React build environment, follow these instructions:
+      * https://reactjs.org/docs/add-react-to-a-new-app.html
+      * https://reactjs.org/docs/add-react-to-an-existing-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      * https://reactjs.org/docs/react-without-jsx.html
+      * https://reactjs.org/docs/cdn-links.html
+    -->
+  </body>
+</html>

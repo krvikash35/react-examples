@@ -1,0 +1,101 @@
+<!-- https://blog.andrewray.me/flux-for-stupid-people/ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flux/3.1.3/Flux.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="microevent.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+/*
+             ---------ACTION<----
+             |                   |
+             |                   |
+ACTION-->DISPATCHER-->STORE-->VIEW
+
+*/
+
+    //STORE
+    let store = {
+        reverseMsg: ''
+    }
+    MicroEvent.mixin(store); // now store can emit event
+
+    //DISPATCHER
+    let AppDispatcher = new Flux.Dispatcher(); 
+    AppDispatcher.register((payload) => {
+        switch (payload.actionName) {
+            case 'GOT_MSG':
+                store.reverseMsg = payload.data.split('').reverse().join('');
+                store.trigger('change')
+                break;
+        
+            default:
+                break;
+        }
+    });
+
+    class FluxComponent extends React.Component{
+
+        componentDidMount(){
+            store.bind('change', this.onStoreChange.bind(this))
+        }
+
+        onStoreChange(){
+            this.forceUpdate()
+        }
+
+        componentWillUnmount(){
+            store.unbind('change', this.onStoreChange)
+        }
+
+        onInputChange(e){
+            AppDispatcher.dispatch({
+                actionName: 'GOT_MSG',
+                data: e.target.value
+            });
+        }
+
+        render(){
+            return (
+                <div> 
+                    <h1>Reverse: {store.reverseMsg}</h1>
+                    <input onChange={this.onInputChange.bind(this)}/>    
+                </div>
+            )
+        }
+    }
+    
+    const rootEle = (
+        <div>
+            Flux Example<FluxComponent/>
+        </div>
+    )
+    ReactDOM.render(rootEle, document.getElementById('root'));
+
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      To set up a production-ready React build environment, follow these instructions:
+      * https://reactjs.org/docs/add-react-to-a-new-app.html
+      * https://reactjs.org/docs/add-react-to-an-existing-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      * https://reactjs.org/docs/react-without-jsx.html
+      * https://reactjs.org/docs/cdn-links.html
+    -->
+
+    <!-- Sure, we'll call the render function again, and sure, all the code in the render function will be re-run. 
+    But React will only update the real DOM if your rendered output has changed. Your render function is 
+    actually generating a "virtual DOM", which React compares to the previous output of render. 
+    If the two virtual DOMs are different, React will update the real DOM with only the difference. -->
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+    
+
+    class ChildComp extends React.Component{
+
+        constructor(){
+            super();
+            this.counter = 0;
+        }
+
+        handleClick(){
+            this.counter = this.counter + 1;
+            this.props.parentCompCB(this.counter);
+        }
+
+        render(){
+            console.log(this.props)
+            return (
+                <div> 
+                    <button onClick={this.handleClick.bind(this)}>This is ChildComponent: send data to parent</button>
+                    <div>Got {this.props.msgToChild} time message from parent</div>
+                </div>
+            )
+        }
+    }
+
+    class ParentComp extends React.Component{
+        constructor(){
+            super();
+            this.state = {msgToChild: 0, msgFromChild: 0};
+            this.counter = 0;
+        }
+        onMsgFromChild(times){
+            this.setState({msgFromChild: times})
+        }
+
+
+        handleClick(){
+            this.counter = this.counter + 1;
+            this.setState({msgToChild: this.counter});
+            console.log(this.state)
+        }
+
+        render(){
+            return(
+                <div> 
+                    <div>Got {this.state.msgFromChild} time message from childComponent</div>
+                    <ChildComp parentCompCB={this.onMsgFromChild.bind(this)} msgToChild={this.state.msgToChild}/>
+                    <button onClick={this.handleClick.bind(this)}>This is ParentComponent: send data to child</button>
+                </div>
+            )
+        }
+    }
+    
+    const rootEle = (
+        <div>
+            <ParentComp/>
+        </div>
+    )
+    ReactDOM.render(rootEle, document.getElementById('root'));
+
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      To set up a production-ready React build environment, follow these instructions:
+      * https://reactjs.org/docs/add-react-to-a-new-app.html
+      * https://reactjs.org/docs/add-react-to-an-existing-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      * https://reactjs.org/docs/react-without-jsx.html
+      * https://reactjs.org/docs/cdn-links.html
+    -->
+  </body>
+</html>
